@@ -5,10 +5,8 @@ plugins {
   id("com.google.devtools.ksp")
 }
 
-val localProps = java.util.Properties()
-rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { localProps.load(it) }
 val ytKey: String = System.getenv("YOUTUBE_API_KEY")
-  ?: localProps.getProperty("YOUTUBE_API_KEY", "")
+  ?: (project.findProperty("YOUTUBE_API_KEY") as? String).orEmpty()
 
 android {
   namespace = "com.example.ytsearch"
@@ -34,8 +32,11 @@ android {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
-  kotlinOptions {
-    jvmTarget = "17"
+}
+
+kotlin {
+  compilerOptions {
+    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
   }
 }
 dependencies {

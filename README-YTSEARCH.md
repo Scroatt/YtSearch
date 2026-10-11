@@ -6,8 +6,8 @@ via YouTube Data API v3. Sem chave, funciona offline com catálogo local.
 ## Chave da API (grátis)
 1. Google Cloud Console → novo projeto → ative **YouTube Data API v3**.
 2. Credenciais → **Chave de API** (restrinja por app se quiser).
-3. Local: crie `local.properties` com `YOUTUBE_API_KEY=SUA_CHAVE`
-   (o arquivo está no `.gitignore`, nunca é commitado).
+3. Local: adicione em `~/.gradle/gradle.properties` a linha
+   `YOUTUBE_API_KEY=SUA_CHAVE` (fora do repo, nunca é commitado).
 4. GitHub: repo → Settings → Secrets → Actions → New secret
    `YOUTUBE_API_KEY` com a chave. O workflow injeta no build.
 
