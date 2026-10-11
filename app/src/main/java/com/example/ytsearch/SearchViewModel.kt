@@ -25,6 +25,7 @@ data class SearchUiState(
   val loading: Boolean = false
 )
 
+@OptIn(FlowPreview::class)
 class SearchViewModel(app: Application) : AndroidViewModel(app) {
   private val dao = AppDatabase.get(app).historyDao()
   private val repo = SearchRepository(dao)
@@ -39,7 +40,6 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
         _ui.update { it.copy(history = rows.map { e -> e.query }) }
       }
     }
-    @OptIn(FlowPreview::class)
     viewModelScope.launch {
       queryFlow.debounce(300).collectLatest { q ->
         if (q.isBlank()) {
