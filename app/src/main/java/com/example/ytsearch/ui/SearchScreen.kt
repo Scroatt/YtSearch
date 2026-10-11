@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,7 +36,7 @@ import com.example.ytsearch.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(vm: SearchViewModel) {
+fun SearchScreen(vm: SearchViewModel, onOpen: (String) -> Unit, onVoice: () -> Unit) {
   val state by vm.ui.collectAsState()
   var active by rememberSaveable { mutableStateOf(false) }
 
@@ -50,10 +51,11 @@ fun SearchScreen(vm: SearchViewModel) {
       placeholder = { Text("Pesquisar") },
       leadingIcon = { Icon(Icons.Filled.Search, null) },
       trailingIcon = {
-        if (state.query.isNotEmpty()) {
-          IconButton(onClick = { vm.onQueryChange("") }) {
-            Icon(Icons.Filled.Clear, null)
+        Row {
+          if (state.query.isNotEmpty()) {
+            IconButton(onClick = { vm.onQueryChange("") }) { Icon(Icons.Filled.Clear, null) }
           }
+          IconButton(onClick = onVoice) { Icon(Icons.Filled.Mic, null) }
         }
       }
     ) {
@@ -82,6 +84,8 @@ fun SearchScreen(vm: SearchViewModel) {
       }
     }
 
+    state.voiceError?.let { Text(it, modifier = Modifier.padding(horizontal = 16.dp)) }
+
     if (!active && state.history.isNotEmpty() && state.results.isEmpty()) {
       Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         state.history.take(5).forEach { h ->
@@ -94,7 +98,7 @@ fun SearchScreen(vm: SearchViewModel) {
       CircularProgressIndicator(Modifier.padding(24.dp))
     } else {
       LazyColumn {
-        items(state.results) { VideoCard(it) }
+        items(state.results, key = { it.id }) { v -> FeedCard(v, onOpen) }
       }
     }
   }
