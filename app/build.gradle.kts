@@ -4,6 +4,12 @@ plugins {
   id("org.jetbrains.kotlin.plugin.compose")
   id("com.google.devtools.ksp")
 }
+
+val localProps = java.util.Properties()
+rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { localProps.load(it) }
+val ytKey: String = System.getenv("YOUTUBE_API_KEY")
+  ?: localProps.getProperty("YOUTUBE_API_KEY", "")
+
 android {
   namespace = "com.example.ytsearch"
   compileSdk = 34
@@ -11,15 +17,19 @@ android {
     applicationId = "com.example.ytsearch"
     minSdk = 24
     targetSdk = 34
-    versionCode = 2
-    versionName = "2.0"
+    versionCode = 3
+    versionName = "3.0"
+    buildConfigField("String", "YOUTUBE_API_KEY", "\"$ytKey\"")
   }
   buildTypes {
     release {
       isMinifyEnabled = false
     }
   }
-  buildFeatures { compose = true }
+  buildFeatures {
+    compose = true
+    buildConfig = true
+  }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -41,6 +51,7 @@ dependencies {
   implementation("androidx.compose.ui:ui-tooling-preview")
   implementation("androidx.compose.material3:material3")
   implementation("androidx.compose.material:material-icons-extended")
+  implementation("io.coil-kt:coil-compose:2.6.0")
   implementation("androidx.room:room-runtime:2.6.1")
   implementation("androidx.room:room-ktx:2.6.1")
   ksp("androidx.room:room-compiler:2.6.1")

@@ -18,6 +18,8 @@ jobs:
           yes | "$SDKM" --licenses > /dev/null || true
       - uses: gradle/actions/setup-gradle@v4
       - run: gradle :app:assembleDebug --stacktrace
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
       - uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk

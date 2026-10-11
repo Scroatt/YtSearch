@@ -31,7 +31,7 @@ import com.example.ytsearch.SearchViewModel
 @Composable
 fun ShortsScreen(vm: SearchViewModel, onOpen: (String) -> Unit) {
   val state by vm.ui.collectAsState()
-  val clips = vm.repo.home("Tudo").take(6)
+  val clips = (if (state.feed.isNotEmpty()) state.feed else vm.repo.home("Tudo")).take(6)
   val pager = rememberPagerState(pageCount = { clips.size })
   VerticalPager(state = pager, modifier = Modifier.fillMaxSize()) { i ->
     val v = clips[i]

@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -26,8 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.ytsearch.model.VideoResult
 
 private val thumbs = listOf(
@@ -39,7 +41,7 @@ private val thumbs = listOf(
 )
 
 @Composable
-fun ThumbArt(seed: Int, duration: String, modifier: Modifier = Modifier) {
+fun ThumbArt(seed: Int, duration: String, modifier: Modifier = Modifier, thumb: String = "") {
   val pair = thumbs[kotlin.math.abs(seed) % thumbs.size]
   Box(
     modifier = modifier
@@ -47,12 +49,21 @@ fun ThumbArt(seed: Int, duration: String, modifier: Modifier = Modifier) {
       .clip(RoundedCornerShape(12.dp))
       .background(Brush.linearGradient(listOf(Color(pair.first), Color(pair.second))))
   ) {
-    Text(
-      "LUME PLAY",
-      modifier = Modifier.align(Alignment.Center),
-      style = MaterialTheme.typography.titleLarge,
-      color = Color.White.copy(alpha = 0.9f)
-    )
+    if (thumb.isNotBlank()) {
+      AsyncImage(
+        model = thumb,
+        contentDescription = null,
+        modifier = Modifier.fillMaxSize(),
+        contentScale = ContentScale.Crop
+      )
+    } else {
+      Text(
+        "LUME PLAY",
+        modifier = Modifier.align(Alignment.Center),
+        style = MaterialTheme.typography.titleLarge,
+        color = Color.White.copy(alpha = 0.9f)
+      )
+    }
     Text(
       duration,
       modifier = Modifier
@@ -75,7 +86,7 @@ fun FeedCard(item: VideoResult, onOpen: (String) -> Unit, onMenu: (String) -> Un
       .clickable { onOpen(item.id) }
       .padding(horizontal = 12.dp, vertical = 8.dp)
   ) {
-    ThumbArt(item.seed, item.duration, Modifier.fillMaxWidth())
+    ThumbArt(item.seed, item.duration, Modifier.fillMaxWidth(), item.thumb)
     Row(Modifier.padding(top = 8.dp), verticalAlignment = Alignment.Top) {
       Icon(Icons.Filled.AccountCircle, null, Modifier.size(36.dp), tint = MaterialTheme.colorScheme.secondary)
       Spacer(Modifier.width(10.dp))

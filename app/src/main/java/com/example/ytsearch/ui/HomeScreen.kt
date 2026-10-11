@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -47,8 +48,11 @@ fun HomeScreen(vm: SearchViewModel, onOpen: (String) -> Unit) {
         )
       }
     }
+    if (state.feedLoading) {
+      CircularProgressIndicator(Modifier.padding(24.dp))
+    }
     LazyColumn(Modifier.fillMaxSize()) {
-      items(vm.repo.home(state.category), key = { it.id }) { v ->
+      items(state.feed, key = { it.id }) { v ->
         FeedCard(v, onOpen)
       }
     }

@@ -1,5 +1,11 @@
 package com.example.ytsearch.model
 
+data class YTComment(
+  val author: String,
+  val text: String,
+  val likes: String
+)
+
 data class VideoResult(
   val id: String,
   val title: String,
@@ -10,5 +16,7 @@ data class VideoResult(
   val subs: String = "1,1 mi",
   val category: String = "Geral",
   val description: String = "Vídeo de demonstração do MVP Lume Play.",
-  val seed: Int = 0
+  val seed: Int = 0,
+  val thumb: String = "",
+  val real: Boolean = false
 )

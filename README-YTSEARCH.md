@@ -1,31 +1,27 @@
-# Lume Play (MVP)
+# Lume Play (MVP + YouTube real)
 
-MVP funcional inspirado no comportamento observável da busca do YouTube
-(evidências REA com IDs no chat), com identidade própria: nome, cores e
-conteúdo originais. Nenhum código do YouTube foi copiado.
+MVP com identidade própria, agora com dados e player reais do YouTube
+via YouTube Data API v3. Sem chave, funciona offline com catálogo local.
+
+## Chave da API (grátis)
+1. Google Cloud Console → novo projeto → ative **YouTube Data API v3**.
+2. Credenciais → **Chave de API** (restrinja por app se quiser).
+3. Local: crie `local.properties` com `YOUTUBE_API_KEY=SUA_CHAVE`
+   (o arquivo está no `.gitignore`, nunca é commitado).
+4. GitHub: repo → Settings → Secrets → Actions → New secret
+   `YOUTUBE_API_KEY` com a chave. O workflow injeta no build.
+
+Cota gratuita: 10.000 unidades/dia. Busca custa 100, em alta custa 1,
+detalhes 1, comentários 1. O app usa debounce e cache de sessão.
 
 ## Telas
-- `HomeScreen`: feed com chips de categoria e cards com arte própria.
-- `SearchScreen`: `SearchBar` com sugestões (debounce), recentes (Room),
-  botão de microfone e resultados.
-- `VoiceSearchScreen`: tela dedicada de voz via `RecognizerIntent`, com
-  permissão `RECORD_AUDIO` e fallback de erro.
-- `ShortsScreen`: pager vertical com curtidas.
-- `PlayerScreen`: player simulado com progresso, inscrever-se, curtir,
-  descrição expansível e "a seguir".
-- `LibraryScreen`: histórico, inscrições, curtidos e downloads.
+- Início: vídeos em alta no Brasil (ou catálogo local sem chave).
+- Busca: resultados reais, sugestões locais, histórico Room, voz.
+- Voz: `RecognizerIntent` com permissão e fallback.
+- Player: **WebView com player oficial incorporado** para vídeos reais,
+  simulado para locais; comentários reais; a seguir.
+- Shorts, Biblioteca: histórico, inscrições, curtidos.
 
-## Estrutura
-- `SearchViewModel`: `StateFlow`, debounce 300ms, histórico Room,
-  inscrições e curtidas em memória.
-- `data/SearchRepository`: catálogo fake, `suggest()`, `search()`,
-  `home()`, `related()`, `byId()`; troque por `VideoSearchApi` (Retrofit).
-- `data/local`: Room `search_history` (20 recentes).
-- `ui/Components.kt`: `ThumbArt` (arte em gradiente) e `FeedCard`.
-
-## Compilar local
+## Compilar
 `gradle :app:assembleDebug` → `app/build/outputs/apk/debug/app-debug.apk`
-
-## GitHub (APK baixável)
-Push → job `build` → artifact `app-debug-apk`.
-Arquivo: `.github/workflows/android-apk.yml`.
+Com chave local: `local.properties` resolve sozinho.
